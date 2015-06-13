@@ -1,0 +1,18 @@
+{
+    "name": "MD_MAX72XX",
+    "keywords": "MAX72XX 8x8 Led Matrix",
+    "description": "Implements functions that allow the MAX72xx to be used for LED matrices (64 individual LEDs)",
+    "version":" 2.6"
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/mariusrugan/MD_MAX72XX.git"
+    },
+    "frameworks": "arduino",
+    "platforms": "atmelavr",
+    "authors":
+    {
+        "name": "marco_c"
+        "url": "http://arduinocode.codeplex.com/releases/view/120493"
+    },
+}
