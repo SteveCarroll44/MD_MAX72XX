@@ -31,23 +31,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 MD_MAX72XX::MD_MAX72XX(uint8_t dataPin, uint8_t clkPin, uint8_t csPin, uint8_t numDevices):
-_dataPin(dataPin), _clkPin(clkPin), _csPin(csPin), _maxDevices(numDevices),
-_updateEnabled(true)
-{
-	_hardwareSPI = false;
+_dataPin(dataPin), _clkPin(clkPin), _csPin(csPin), _hardwareSPI(false),
+_maxDevices(numDevices), _updateEnabled(true)
 #if USE_LOCAL_FONT && USE_FONT_INDEX
-	_fontIndex = NULL;
+,_fontIndex(NULL)
 #endif
+{
 }
 
 MD_MAX72XX::MD_MAX72XX(uint8_t csPin, uint8_t numDevices):
-_dataPin(0), _clkPin(0), _csPin(csPin), _maxDevices(numDevices),
-_updateEnabled(true)
-{
-	_hardwareSPI = true;
+_dataPin(0), _clkPin(0), _csPin(csPin), _hardwareSPI(true),
+_maxDevices(numDevices), _updateEnabled(true)
 #if USE_LOCAL_FONT && USE_FONT_INDEX
-	_fontIndex = NULL;
+,_fontIndex(NULL)
 #endif
+{
 }
 
 void MD_MAX72XX::begin(void)
@@ -96,16 +94,6 @@ void MD_MAX72XX::begin(void)
   setFont(NULL);
 #endif // INCLUDE_LOCAL_FONT
 
-  // clear internal memory map for this device
-  for (uint8_t d = FIRST_BUFFER; d <= LAST_BUFFER; d++)
-  {
-    _matrix[d].changed = ALL_CLEAR;
-    for (uint8_t i = 0; i < ROW_SIZE; i++)
-    {
-      _matrix[d].dig[i] = 0;
-    }
-  }
-			
   // Initialize the display devices. On initial power-up
   // - all control registers are reset, 
   // - scan limit is set to one digit (row/col or LED),
@@ -119,7 +107,7 @@ void MD_MAX72XX::begin(void)
   control(SCANLIMIT, ROW_SIZE-1);	// scan limit is set to max on startup
   control(INTENSITY, MAX_INTENSITY/2);	// set intensity to a reasonable value
   control(DECODE, OFF);				// make sure that no decoding happens (warm boot potential issue)
-  clear();
+  clear();					// Clear the display and internal memory map
   control(SHUTDOWN, OFF);			// take the modules out of shutdown mode
 }
 
@@ -190,6 +178,9 @@ void MD_MAX72XX::controlLibrary(controlRequest_t mode, int value)
 
 	  case WRAPAROUND:
 		  _wrapAround = (value == ON);
+		  break;
+
+	  default:
 		  break;
   }
 }
