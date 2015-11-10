@@ -285,7 +285,7 @@ public:
 	 *
 	 * This type is used in the setFont() method to set the font to be used
 	 */
-	typedef const PROGMEM uint8_t 	fontType_t;
+	typedef const uint8_t 	fontType_t;
 #endif
 
 	/**
@@ -899,10 +899,12 @@ private:
 #if USE_LOCAL_FONT
   // Font related data
   fontType_t	*_fontData;		// pointer to the current font data being used
-  uint16_t		*_fontIndex;	// font index for faster access to font table offsets
-
   uint16_t	getFontCharOffset(uint8_t c);	// find the character in the font data 
+
+#if USE_INDEX_FONT
+  uint16_t		*_fontIndex;	// font index for faster access to font table offsets
   void		buildFontIndex(void);			// build a font index
+#endif
 #endif
 
   // Private functions

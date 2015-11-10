@@ -21,8 +21,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include <avr/io.h> 
-#include <avr/pgmspace.h>  
+#include <Arduino.h> 
 #include "MD_MAX72xx.h"
 #include "MD_MAX72xx_lib.h"
 
@@ -34,6 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 #if USE_LOCAL_FONT
 // Local font handling functions if the option is enabled
 
+#if USE_FONT_INDEX
 void MD_MAX72XX::buildFontIndex(void)
 {
   uint16_t	offset = 0;
@@ -51,17 +51,20 @@ void MD_MAX72XX::buildFontIndex(void)
 	offset++;
   }
 }
+#endif
 
 uint16_t MD_MAX72XX::getFontCharOffset(uint8_t c)
 {
   PRINT("\nfontOffset ASCII ", c);
 
+#if USE_FONT_INDEX
   if (_fontIndex != NULL)
   {
     PRINTS(" from Table");
     return(_fontIndex[c]);
   }
   else
+#endif
   {
     PRINTS(" by Search ");
 
@@ -83,7 +86,9 @@ bool MD_MAX72XX::setFont(fontType_t * f)
 {
 	_fontData = (f == NULL ? _sysfont_var : f);
 
+#if USE_FONT_INDEX
   buildFontIndex();
+#endif
 
   return(true);
 }
@@ -133,7 +138,7 @@ uint8_t MD_MAX72XX::setChar(uint16_t col, uint8_t c)
 }
 
 // Standard font - variable spacing
-const uint8_t PROGMEM _sysfont_var[] = 
+MD_MAX72XX::fontType_t PROGMEM _sysfont_var[] = 
 {
 	0,							// 0 - 'Empty Cell'
 	5, 62, 91, 79, 91, 62,		// 1 - 'Sad Smiley'
